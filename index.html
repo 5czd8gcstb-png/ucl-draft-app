@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+  <meta name="theme-color" content="#07143e">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="UCL Draft">
+  <meta name="mobile-web-app-capable" content="yes">
+  <title>UCL Draft</title>
+  <link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
+  <link rel="manifest" href="manifest.webmanifest">
+  <style>
+    :root{color-scheme:dark;background:#07143e}
+    *{box-sizing:border-box}
+    html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#07143e;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+    body{min-height:100dvh}
+    #appFrame{position:fixed;inset:0;width:100%;height:100%;border:0;background:#07143e;opacity:0;transition:opacity .18s ease}
+    #appFrame.ready{opacity:1}
+    #splash,#setup{position:fixed;inset:0;display:grid;place-items:center;background:radial-gradient(circle at 50% 25%,#133a9b 0,#07143e 52%,#04102f 100%);padding:max(24px,env(safe-area-inset-top)) 24px max(24px,env(safe-area-inset-bottom));z-index:2}
+    .card{text-align:center;max-width:420px;width:100%}
+    .icon{width:116px;height:116px;border-radius:25%;display:block;margin:0 auto 22px;box-shadow:0 20px 60px rgba(0,0,0,.28)}
+    h1{font-size:26px;margin:0 0 8px;letter-spacing:.02em}
+    p{margin:0;color:#aebee5;line-height:1.55;font-size:14px}
+    .loader{width:28px;height:28px;border:3px solid #ffffff2b;border-top-color:#8ce7ff;border-radius:50%;margin:24px auto 0;animation:spin .8s linear infinite}
+    #setup{display:none}
+    #setup code{display:block;word-break:break-all;background:#0d2050;border:1px solid #2b4071;border-radius:12px;padding:14px;margin:18px 0;color:#dce7ff;font-size:12px;text-align:left}
+    @keyframes spin{to{transform:rotate(360deg)}}
+  </style>
+</head>
+<body>
+  <div id="splash">
+    <div class="card">
+      <img class="icon" src="icons/icon-192.png" alt="UCL Draft">
+      <h1>UCL DRAFT</h1>
+      <p>Fantasy Korzh · Season 26/27</p>
+      <div class="loader" aria-label="Загрузка"></div>
+    </div>
+  </div>
+
+  <div id="setup">
+    <div class="card">
+      <img class="icon" src="icons/icon-192.png" alt="UCL Draft">
+      <h1>Нужна ссылка приложения</h1>
+      <p>Откройте <b>config.js</b> и вставьте текущий URL развернутого Apps Script Web App вместо:</p>
+      <code>PASTE_APPS_SCRIPT_WEB_APP_URL_HERE</code>
+    </div>
+  </div>
+
+  <iframe id="appFrame" title="UCL Draft" allow="clipboard-write"></iframe>
+
+  <script src="config.js"></script>
+  <script>
+    (function(){
+      var cfg=window.UCL_DRAFT_CONFIG||{};
+      var url=String(cfg.appUrl||'').trim();
+      var placeholder=!url || url.indexOf('PASTE_APPS_SCRIPT')>=0;
+      if(placeholder){
+        document.getElementById('splash').style.display='none';
+        document.getElementById('setup').style.display='grid';
+        return;
+      }
+      var frame=document.getElementById('appFrame');
+      frame.addEventListener('load',function(){
+        frame.classList.add('ready');
+        setTimeout(function(){document.getElementById('splash').style.display='none';},120);
+      });
+      frame.src=url;
+      if('serviceWorker' in navigator){
+        window.addEventListener('load',function(){navigator.serviceWorker.register('./sw.js').catch(function(){});});
+      }
+    })();
+  </script>
+</body>
+</html>
