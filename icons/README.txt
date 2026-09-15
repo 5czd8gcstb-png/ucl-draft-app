@@ -1,1 +1,0 @@
-Icon binaries are stored in this directory for the PWA launcher.
